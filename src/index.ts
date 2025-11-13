@@ -3,17 +3,29 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { sequelize } from "./config/db";
 
-import authRoutes from "./routes/auth.routes";
-import userRoutes from "./routes/user.routes";
-import donacionRoutes from "./routes/donacion.routes";
-import animalRoutes from "./routes/animal.routes";
-import adopcionRoutes from "./routes/adopcion.routes";
-import refugioRoutes from "./routes/refugio.routes";
+import authRoutes from "./auth/routes/auth.routes";
+import userRoutes from "./usuarios/routes/user.routes";
+import donacionRoutes from "./donaciones/routes/donacion.routes";
+import animalRoutes from "./animales/routes/animal.routes";
+import adopcionRoutes from "./adopciones/routes/adopcion.routes";
+import refugioRoutes from "./refugios/routes/refugio.routes";
+import voluntarioRoutes from "./voluntarios/routes/voluntario.routes";
+import administradorRoutes from "./administradores/routes/administrador.routes";
+
+
+import "./usuarios/entities/usuario.entity";
+import "./administradores/entities/administrador.entity";
+import "./animales/entities/animal.entity";
+import "./adopciones/entities/adopcion.entity";
+import "./donaciones/entities/donacion.entity";
+import "./refugios/entities/refugio.entity";
+import "./voluntarios/entities/voluntario.entity";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 
 app.use(express.json());
 app.use(
@@ -24,15 +36,18 @@ app.use(
   })
 );
 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", userRoutes);
 app.use("/api/donaciones", donacionRoutes);
 app.use("/api/animales", animalRoutes);
 app.use("/api/adopciones", adopcionRoutes);
 app.use("/api/refugios", refugioRoutes);
+app.use("/api/voluntarios", voluntarioRoutes);
+app.use("/api/administradores", administradorRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("API Refugio funcionando correctamente ");
+  res.send("API Refugio Huellitas funcionando correctamente");
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -47,7 +62,7 @@ const testConnection = async () => {
     await sequelize.authenticate();
     console.log("Conexión a PostgreSQL exitosa");
   } catch (error) {
-    console.error("Error al conectar a PostgreSQL", error);
+    console.error("Error al conectar a PostgreSQL:", error);
   }
 };
 

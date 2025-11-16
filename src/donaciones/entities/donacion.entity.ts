@@ -1,22 +1,21 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
-import Usuario from "../../usuarios/entities/usuario.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Usuario } from "../../usuarios/entities/usuario.entity";
 
-const Donacion = sequelize.define("Donacion", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  usuario_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: Usuario, key: "id" },
-  },
-  monto: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-  tipo: DataTypes.STRING,
-  fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-}, {
-  tableName: "donaciones",
-  timestamps: false,
-});
+@Entity("donaciones")
+export class Donacion {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-Donacion.belongsTo(Usuario, { foreignKey: "usuario_id", onDelete: "CASCADE" });
+  @ManyToOne(() => Usuario, { nullable: true, onDelete: "CASCADE" })
+  @JoinColumn({ name: "usuario_id" })
+  usuario?: Usuario;
 
-export default Donacion;
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  monto?: number;
+
+  @Column({ nullable: true })
+  tipo?: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  fecha!: Date;
+}

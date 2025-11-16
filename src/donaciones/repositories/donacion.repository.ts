@@ -1,16 +1,31 @@
-import Donacion from "../entities/donacion.entity";
-import Usuario from "../../usuarios/entities/usuario.entity";
+import { AppDataSource } from "../../config/db";
+import { Donacion } from "../entities/donacion.entity";
 
 export class DonacionRepository {
-  async findAll() {
-    return await Donacion.findAll({ include: [Usuario] });
+  private repo;
+
+  constructor() {
+    this.repo = AppDataSource.getRepository(Donacion);
   }
 
-  async findById(id: number) {
-    return await Donacion.findByPk(id, { include: [Usuario] });
+  findAll() {
+    return this.repo.find();
   }
 
-  async create(data: any) {
-    return await Donacion.create(data);
+  findById(id: number) {
+    return this.repo.findOne({ where: { id } });
+  }
+
+  create(data: any) {
+    const nueva = this.repo.create(data);
+    return this.repo.save(nueva);
+  }
+
+  update(id: number, data: any) {
+    return this.repo.update(id, data);
+  }
+
+  delete(id: number) {
+    return this.repo.delete(id);
   }
 }

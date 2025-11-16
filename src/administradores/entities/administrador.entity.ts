@@ -1,30 +1,15 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
-import Usuario from "../../usuarios/entities/usuario.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Usuario } from "../../usuarios/entities/usuario.entity";
 
-const Administrador = sequelize.define(
-  "Administrador",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    privilegios: {
-      type: DataTypes.TEXT,
-    },
-    usuario_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  },
-  {
-    tableName: "administradores",
-    timestamps: false,
-  }
-);
+@Entity("administradores")
+export class Administrador {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-Usuario.hasOne(Administrador, { foreignKey: "usuario_id" });
-Administrador.belongsTo(Usuario, { foreignKey: "usuario_id" });
+  @Column({ nullable: true })
+  privilegios?: string;
 
-export default Administrador;
+  @ManyToOne(() => Usuario, { nullable: true })
+  @JoinColumn({ name: "usuario_id" })
+  usuario?: Usuario;
+}

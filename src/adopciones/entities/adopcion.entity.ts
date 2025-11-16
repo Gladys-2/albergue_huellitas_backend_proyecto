@@ -1,26 +1,21 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
-import Usuario from "../../usuarios/entities/usuario.entity";
-import Animal from "../../animales/entities/animal.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
+import { Usuario } from "../../usuarios/entities/usuario.entity";
+import { Animal } from "../../animales/entities/animal.entity";
 
-const Adopcion = sequelize.define("Adopcion", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  usuario_id: {
-    type: DataTypes.INTEGER,
-    references: { model: Usuario, key: "id" },
-  },
-  animal_id: {
-    type: DataTypes.INTEGER,
-    references: { model: Animal, key: "id" },
-  },
-  fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-  estado: DataTypes.STRING,
-}, {
-  tableName: "adopciones",
-  timestamps: false,
-});
+@Entity("adopciones")
+export class Adopcion {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-Adopcion.belongsTo(Usuario, { foreignKey: "usuario_id" });
-Adopcion.belongsTo(Animal, { foreignKey: "animal_id" });
+  @ManyToOne(() => Usuario, { nullable: false })
+  usuario!: Usuario;
 
-export default Adopcion;
+  @ManyToOne(() => Animal, { nullable: false })
+  animal!: Animal;
+
+  @CreateDateColumn()
+  fecha!: Date;
+
+  @Column({ nullable: true })
+  estado?: string;
+}

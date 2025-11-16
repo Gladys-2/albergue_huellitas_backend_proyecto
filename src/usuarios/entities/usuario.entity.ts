@@ -1,23 +1,34 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-const Usuario = sequelize.define("Usuario", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  nombre: DataTypes.STRING,
-  apellido_paterno: DataTypes.STRING,
-  apellido_materno: DataTypes.STRING,
-  cedula_identidad: DataTypes.STRING,
-  telefono: DataTypes.STRING,
-  correo_electronico: DataTypes.STRING,
-  contrasena: DataTypes.STRING,
-  rol: { type: DataTypes.STRING, defaultValue: "usuario" },
-  genero: DataTypes.STRING,
-  estado: { type: DataTypes.STRING, defaultValue: "Activo" },
-}, {
-  tableName: "usuarios",
-  timestamps: true,
-  createdAt: "createdAt",
-  updatedAt: "updatedAt",
-});
+@Entity("usuarios")
+export class Usuario {
+  password(password: string, password1: any) {
+    throw new Error("Method not implemented.");
+  }
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-export default Usuario;
+  @Column({ nullable: true, default: "Sin nombre" })
+  nombre?: string;
+
+  @Column({ nullable: true, default: "Sin apellido" })
+  apellido_paterno?: string;
+
+  @Column({ nullable: true })
+  apellido_materno?: string;
+
+  @Column({ unique: true, nullable: true })
+  correo_electronico?: string;
+
+  @Column({ nullable: true })
+  contrasena?: string; 
+
+  @Column({ default: "usuario" })
+  rol!: string;
+
+  @Column({ nullable: true })
+  genero?: string;
+
+  @Column({ default: "Activo" })
+  estado!: string;
+}

@@ -1,29 +1,47 @@
-import Usuario from "../entities/usuario.entity";
+import { Usuario } from "../../usuarios/entities/usuario.entity";
+import { AppDataSource } from "../../config/db";
+import { Repository } from "typeorm";
 
 export class UserRepository {
-  async findAll() {
-    return await Usuario.findAll({ attributes: { exclude: ["contrasena"] } });
+  private repo: Repository<Usuario>;
+  findOne: any;
+  save: any;
+
+  constructor() {
+    this.repo = AppDataSource.getRepository(Usuario);
   }
 
-  async findById(id: number) {
-    return await Usuario.findByPk(id, { attributes: { exclude: ["contrasena"] } });
+  async findAll(): Promise<Usuario[]> {
+    return this.repo.find({
+      select: ["id","nombre","apellido_paterno","apellido_materno","correo_electronico","rol","genero","estado"],
+    });
   }
 
-  async findByEmail(email: string) {
-    return await Usuario.findOne({ where: { correo_electronico: email } });
+  async findById(id: number): Promise<Usuario | null> {
+    return this.repo.findOne({
+      where: { id },
+      select: ["id","nombre","apellido_paterno","apellido_materno","correo_electronico","rol","genero","estado"],
+    });
   }
 
-  async create(data: any) {
-    return await Usuario.create(data);
+  async findByEmail(correo_electronico: string): Promise<Usuario | null> {
+    return this.repo.findOne({ where: { correo_electronico } });
   }
 
-  async update(id: number, data: any) {
-    const usuario = await Usuario.findByPk(id);
-    if (!usuario) return null;
-    return await usuario.update(data);
+  async create(data: Partial<Usuario>): Promise<Usuario> {
+    const user = this.repo.create(data);
+    return this.repo.save(user);
   }
 
-  async delete(id: number) {
-    return await Usuario.destroy({ where: { id } });
+  async update(id: number, data: Partial<Usuario>): Promise<Usuario | null> {
+    const user = await this.repo.findOneBy({ id });
+    if (!user) return null;
+    Object.assign(user, data);
+    return this.repo.save(user);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.repo.delete(id);
   }
 }
+export const userRepository = new UserRepository();

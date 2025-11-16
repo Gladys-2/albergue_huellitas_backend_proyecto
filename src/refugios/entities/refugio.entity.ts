@@ -1,17 +1,25 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-const Refugio = sequelize.define("Refugio", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  nombre: { type: DataTypes.STRING, allowNull: false },
-  direccion: DataTypes.STRING,
-  telefono: DataTypes.STRING,
-  correo: DataTypes.STRING,
-  fecha_creacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-  fecha_actualizacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-}, {
-  tableName: "refugios",
-  timestamps: false,
-});
+@Entity("refugios")
+export class Refugio {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-export default Refugio;
+  @Column({ nullable: true, default: "Sin nombre" })
+  nombre?: string;
+
+  @Column({ nullable: true })
+  direccion?: string;
+
+  @Column({ nullable: true })
+  telefono?: string;
+
+  @Column({ nullable: true })
+  correo?: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  fecha_creacion!: Date;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  fecha_actualizacion!: Date;
+}

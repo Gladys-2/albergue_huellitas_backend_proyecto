@@ -1,25 +1,31 @@
-import Refugio from "../entities/refugio.entity";
+import { AppDataSource } from "../../config/db";
+import { Refugio } from "../entities/refugio.entity";
 
 export class RefugioRepository {
-  async findAll() {
-    return await Refugio.findAll();
+  private repo;
+
+  constructor() {
+    this.repo = AppDataSource.getRepository(Refugio);
   }
 
-  async findById(id: number) {
-    return await Refugio.findByPk(id);
+  findAll() {
+    return this.repo.find();
   }
 
-  async create(data: any) {
-    return await Refugio.create(data);
+  findById(id: number) {
+    return this.repo.findOne({ where: { id } });
   }
 
-  async update(id: number, data: any) {
-    const refugio = await Refugio.findByPk(id);
-    if (!refugio) return null;
-    return await refugio.update(data);
+  create(data: any) {
+    const nuevo = this.repo.create(data);
+    return this.repo.save(nuevo);
   }
 
-  async delete(id: number) {
-    return await Refugio.destroy({ where: { id } });
+  update(id: number, data: any) {
+    return this.repo.update(id, data);
+  }
+
+  delete(id: number) {
+    return this.repo.delete(id);
   }
 }

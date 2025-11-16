@@ -1,21 +1,21 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
-import Refugio from "../../refugios/entities/refugio.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Refugio } from "../../refugios/entities/refugio.entity";
 
-const Voluntario = sequelize.define("Voluntario", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  nombre: { type: DataTypes.STRING, allowNull: false },
-  telefono: DataTypes.STRING,
-  correo: DataTypes.STRING,
-  refugio_id: {
-    type: DataTypes.INTEGER,
-    references: { model: Refugio, key: "id" },
-  },
-}, {
-  tableName: "voluntarios",
-  timestamps: false,
-});
+@Entity("voluntarios")
+export class Voluntario {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-Voluntario.belongsTo(Refugio, { foreignKey: "refugio_id", onDelete: "CASCADE" });
+  @Column({ nullable: true, default: "Sin nombre" })
+  nombre?: string;
 
-export default Voluntario;
+  @Column({ nullable: true })
+  telefono?: string;
+
+  @Column({ nullable: true })
+  correo?: string;
+
+  @ManyToOne(() => Refugio, { nullable: true })
+  @JoinColumn({ name: "refugio_id" })
+  refugio?: Refugio;
+}

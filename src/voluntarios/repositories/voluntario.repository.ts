@@ -1,26 +1,31 @@
-import Voluntario from "../entities/voluntario.entity";
-import Refugio from "../../refugios/entities/refugio.entity";
+import { AppDataSource } from "../../config/db";
+import { Voluntario } from "../entities/voluntario.entity";
 
 export class VoluntarioRepository {
-  async findAll() {
-    return await Voluntario.findAll({ include: [Refugio] });
+  private repo;
+
+  constructor() {
+    this.repo = AppDataSource.getRepository(Voluntario);
   }
 
-  async findById(id: number) {
-    return await Voluntario.findByPk(id, { include: [Refugio] });
+  findAll() {
+    return this.repo.find();
   }
 
-  async create(data: any) {
-    return await Voluntario.create(data);
+  findById(id: number) {
+    return this.repo.findOne({ where: { id } });
   }
 
-  async update(id: number, data: any) {
-    const voluntario = await Voluntario.findByPk(id);
-    if (!voluntario) return null;
-    return await voluntario.update(data);
+  create(data: any) {
+    const nuevo = this.repo.create(data);
+    return this.repo.save(nuevo);
   }
 
-  async delete(id: number) {
-    return await Voluntario.destroy({ where: { id } });
+  update(id: number, data: any) {
+    return this.repo.update(id, data);
+  }
+
+  delete(id: number) {
+    return this.repo.delete(id);
   }
 }

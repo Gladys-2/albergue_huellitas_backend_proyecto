@@ -1,29 +1,9 @@
-import Usuario from "../entities/usuario.entity";
+import { AppDataSource } from "../../config/db";
+import { Usuario } from "../entities/usuario.entity";
+import { Repository } from "typeorm";
 
-export class UsuarioRepository {
-  async findAll() {
-    return await Usuario.findAll({ attributes: { exclude: ["contrasena"] } });
-  }
+export const userRepository: Repository<Usuario> = AppDataSource.getRepository(Usuario);
 
-  async findById(id: number) {
-    return await Usuario.findByPk(id, { attributes: { exclude: ["contrasena"] } });
-  }
-
-  async findByEmail(correo_electronico: string) {
-    return await Usuario.findOne({ where: { correo_electronico } });
-  }
-
-  async create(data: any) {
-    return await Usuario.create(data);
-  }
-
-  async update(id: number, data: any) {
-    const usuario = await Usuario.findByPk(id);
-    if (!usuario) return null;
-    return await usuario.update(data);
-  }
-
-  async delete(id: number) {
-    return await Usuario.destroy({ where: { id } });
-  }
-}
+export const findByEmail = async (correo_electronico: string) => {
+  return await userRepository.findOneBy({ correo_electronico });
+};

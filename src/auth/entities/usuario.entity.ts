@@ -1,27 +1,31 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../../config/db";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-const Usuario = sequelize.define(
-  "Usuario",
-  {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    nombre: { type: DataTypes.STRING, allowNull: false },
-    apellido_paterno: { type: DataTypes.STRING, allowNull: false },
-    apellido_materno: { type: DataTypes.STRING, allowNull: false },
-    cedula_identidad: DataTypes.STRING,
-    telefono: DataTypes.STRING,
-    correo_electronico: { type: DataTypes.STRING, unique: true, allowNull: false },
-    contrasena: { type: DataTypes.STRING, allowNull: false },
-    rol: { type: DataTypes.STRING, defaultValue: "usuario" },
-    genero: DataTypes.STRING,
-    estado: { type: DataTypes.STRING, defaultValue: "Activo" },
-  },
-  {
-    tableName: "usuarios",
-    timestamps: true,
-    createdAt: "createdAt",
-    updatedAt: "updatedAt",
-  }
-);
+@Entity("usuarios")
+export class Usuario {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-export default Usuario;
+  @Column()
+  nombre!: string;
+
+  @Column()
+  apellido_paterno!: string;
+
+  @Column()
+  apellido_materno!: string;
+
+  @Column({ unique: true })
+  correo_electronico!: string;
+
+  @Column()
+  contrasena!: string;
+
+  @Column({ type: "varchar", default: "usuario" })
+  rol!: "usuario" | "administrador";
+
+  @Column({ type: "varchar", default: "Activo" })
+  estado!: "Activo" | "Inactivo";
+
+  @Column({ type: "varchar", nullable: true })
+  avatarUrl?: string; 
+}

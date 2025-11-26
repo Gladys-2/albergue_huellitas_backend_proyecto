@@ -9,11 +9,12 @@ export class VoluntarioRepository {
   }
 
   findAll() {
-    return this.repo.find();
+    // Incluye relación con refugio si existe
+    return this.repo.find({ relations: ["refugio"] });
   }
 
   findById(id: number) {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ["refugio"] });
   }
 
   create(data: any) {

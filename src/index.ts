@@ -11,7 +11,6 @@ import adopcionRoutes from "./adopciones/routes/adopcion.routes";
 import refugioRoutes from "./refugios/routes/refugio.routes";
 import voluntarioRoutes from "./voluntarios/routes/voluntario.routes";
 import administradorRoutes from "./administradores/routes/administrador.routes";
-
 import "./usuarios/entities/usuario.entity";
 import "./administradores/entities/administrador.entity";
 import "./animales/entities/animal.entity";
@@ -37,11 +36,12 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", userRoutes);
 app.use("/api/donaciones", donacionRoutes);
-app.use("/api/animales", animalRoutes);
+app.use("/api/animales", animalRoutes); 
 app.use("/api/adopciones", adopcionRoutes);
 app.use("/api/refugios", refugioRoutes);
 app.use("/api/voluntarios", voluntarioRoutes);
 app.use("/api/administradores", administradorRoutes);
+
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("api--> Refugio Huellitas funcionando correctamente");
@@ -68,5 +68,5 @@ const testConnection = async () => {
 testConnection();
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`http://localhost:${PORT}`);
 });

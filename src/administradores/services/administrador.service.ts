@@ -2,16 +2,13 @@ import { AppDataSource } from "../../config/db";
 import { Usuario } from "../../usuarios/entities/usuario.entity";
 import { Administrador } from "../entities/administrador.entity";
 
-// Repositorios
 const usuarioRepo = AppDataSource.getRepository(Usuario);
 const adminRepo = AppDataSource.getRepository(Administrador);
 
-// Obtener todos los administradores
 export const getAdministradores = async (): Promise<Administrador[]> => {
   return await adminRepo.find({ relations: ["usuario"] });
 };
 
-// Crear administrador
 export const crearAdministrador = async (usuario_id: number, privilegios: string): Promise<Administrador> => {
   const usuario = await usuarioRepo.findOne({ where: { id: usuario_id } });
   if (!usuario) throw new Error("Usuario no encontrado");

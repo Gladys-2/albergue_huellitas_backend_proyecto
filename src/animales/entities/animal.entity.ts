@@ -13,12 +13,36 @@ export class Animal {
   especie?: string;
 
   @Column({ nullable: true })
-  estado?: string;
+  raza?: string;
+
+  @Column({ nullable: true })
+  sexo?: string;
+
+  @Column({ nullable: true, type: "int" })
+  edad?: number;
+
+  @Column({ nullable: true })
+  descripcion?: string;
+
+  @Column({ nullable: true, default: "Disponible" })
+  estado_animal?: "Disponible" | "Adoptado" | "En cuidado";
+
+  @Column({ nullable: true, default: "Activo" })
+  estado?: "Activo" | "Inactivo";
 
   @Column({ nullable: true })
   foto?: string;
 
-  @ManyToOne(() => Refugio, { nullable: true })
+  @Column({ type: "int", nullable: true })
+  refugio_id?: number;
+
+  @ManyToOne(() => Refugio)
   @JoinColumn({ name: "refugio_id" })
   refugio?: Refugio;
+
+  @Column({ nullable: true })
+  fecha_creacion?: string;
+
+  @Column({ nullable: true })
+  fecha_modificacion?: string;
 }

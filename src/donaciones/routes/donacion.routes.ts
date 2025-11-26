@@ -1,9 +1,10 @@
+// src/routes/donacion.routes.ts
 import { Router } from "express";
-import { getDonaciones, crearDonacion } from "../controllers/donacion.controller";
+import { obtenerDonaciones, crearDonacion } from "../controllers/donacion.controller";
 
 const router = Router();
 
-router.get("/", getDonaciones);
-router.post("/", crearDonacion);
+router.get("/", obtenerDonaciones); 
+router.post("/crear", crearDonacion);   
 
 export default router;

@@ -1,24 +1,23 @@
 import { Request, Response } from "express";
-import { DonacionService } from "../services/donacion.service";
+import { AppDataSource } from "../../config/db";
+import { Donacion } from "../entities/donacion.entity";
 
-const service = new DonacionService();
-
-export const getDonaciones = async (req: Request, res: Response) => {
+export const obtenerDonaciones = async (_req: Request, res: Response) => {
   try {
-    const donaciones = await service.listarDonaciones();
+    const donaciones = await AppDataSource.getRepository(Donacion).find();
     res.json(donaciones);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al obtener donaciones", error });
   }
 };
 
 export const crearDonacion = async (req: Request, res: Response) => {
   try {
-    const donacion = await service.crearDonacion(req.body);
-    res.status(201).json(donacion);
+    const repo = AppDataSource.getRepository(Donacion);
+    const nueva = repo.create(req.body);
+    const guardada = await repo.save(nueva);
+    res.status(201).json(guardada);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Error al crear donación", error });
   }
 };

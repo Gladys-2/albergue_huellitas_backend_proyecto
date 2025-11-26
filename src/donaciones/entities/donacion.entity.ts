@@ -1,21 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Usuario } from "../../usuarios/entities/usuario.entity";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity("donaciones")
 export class Donacion {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Usuario, { nullable: true, onDelete: "CASCADE" })
-  @JoinColumn({ name: "usuario_id" })
-  usuario?: Usuario;
+  @Column({ nullable: true })
+  nombreDonante?: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  @Column({ type: "numeric", nullable: true })
   monto?: number;
 
   @Column({ nullable: true })
   tipo?: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  fecha!: Date;
+  @Column({ type: "date", nullable: true })
+  fecha?: string;
+
+  @Column({ nullable: true })
+  metodoPago?: string;
 }

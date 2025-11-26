@@ -14,4 +14,12 @@ export class DonacionService {
   async crearDonacion(data: any) {
     return await repo.create(data);
   }
+
+  async actualizarDonacion(id: number, data: any) {
+    return await repo.update(id, data);
+  }
+
+  async eliminarDonacion(id: number) {
+    return await repo.delete(id);
+  }
 }

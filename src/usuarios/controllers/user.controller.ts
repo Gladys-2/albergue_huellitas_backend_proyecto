@@ -1,21 +1,40 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { UserRepository } from "../repositories/user.repository";
-import { Usuario } from "../entities/usuario.entity";
 
 const userRepo = new UserRepository();
 
 // Crear usuario
 export const crearUsuario = async (req: Request, res: Response) => {
   try {
-    const { contrasena, correo_electronico, ...data } = req.body;
+    const {
+      nombre,
+      apellido_paterno,
+      apellido_materno,
+      correo_electronico,
+      contrasena,
+      rol,
+      genero,
+      estado,
+    } = req.body;
 
-    if (!contrasena) return res.status(400).json({ message: "Contraseña es obligatoria" });
+    if (!contrasena)
+      return res.status(400).json({ message: "Contraseña es obligatoria" });
 
     const hashedPassword = await bcrypt.hash(contrasena, 10);
-    const nuevoUsuario = await userRepo.create({ ...data, correo_electronico, contrasena: hashedPassword });
 
-    res.status(201).json({ usuario: nuevoUsuario });
+    const nuevoUsuario = await userRepo.create({
+      nombre,
+      apellido_paterno,
+      apellido_materno,
+      correo_electronico,
+      contrasena: hashedPassword,
+      rol: rol ?? "usuario",
+      genero,
+      estado: estado ?? "Activo",
+    });
+
+    res.status(201).json(nuevoUsuario);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al crear usuario" });
@@ -37,15 +56,35 @@ export const obtenerUsuarios = async (_req: Request, res: Response) => {
 export const actualizarUsuario = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const data = req.body;
+    const {
+      nombre,
+      apellido_paterno,
+      apellido_materno,
+      correo_electronico,
+      contrasena,
+      rol,
+      genero,
+      estado,
+    } = req.body;
 
-    if (data.contrasena) {
-      data.contrasena = await bcrypt.hash(data.contrasena, 10);
+    const data: any = {
+      nombre,
+      apellido_paterno,
+      apellido_materno,
+      correo_electronico,
+      rol,
+      genero,
+      estado,
+    };
+
+    if (contrasena) {
+      data.contrasena = await bcrypt.hash(contrasena, 10);
     }
 
     const usuarioActualizado = await userRepo.update(Number(id), data);
 
-    if (!usuarioActualizado) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (!usuarioActualizado)
+      return res.status(404).json({ message: "Usuario no encontrado" });
 
     res.json(usuarioActualizado);
   } catch (error) {
@@ -73,13 +112,14 @@ export const loginUsuario = async (req: Request, res: Response) => {
 
     const usuario = await userRepo.findByEmail(correo_electronico);
 
-    if (!usuario) return res.status(400).json({ message: "Usuario o contraseña incorrecta" });
+    if (!usuario)
+      return res.status(400).json({ message: "Usuario o contraseña incorrecta" });
 
     const isMatch = await bcrypt.compare(contrasena, usuario.contrasena!);
 
-    if (!isMatch) return res.status(400).json({ message: "Usuario o contraseña incorrecta" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Usuario o contraseña incorrecta" });
 
-    // Para simplificar no agregamos JWT aún
     res.json({ usuario });
   } catch (error) {
     console.error(error);

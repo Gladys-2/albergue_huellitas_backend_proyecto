@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Usuario } from "../../usuarios/entities/usuario.entity";
 import { Animal } from "../../animales/entities/animal.entity";
 
@@ -13,7 +13,7 @@ export class Adopcion {
   @ManyToOne(() => Animal, { nullable: false })
   animal!: Animal;
 
-  @CreateDateColumn()
+  @Column({ type: "date", nullable: false })
   fecha!: Date;
 
   @Column({ nullable: true })
